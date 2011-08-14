@@ -14,6 +14,7 @@
 		b = elem.getContext("2d");
 		// Create a new path, this lets us specify new strokeStyles? I think?
 		b.beginPath();
+		b.lineWidth = 3;
 		// Vert
 		b.moveTo(166,0);
 		b.lineTo(166,500);
@@ -89,7 +90,7 @@
 			col = 2;
 		else
 			alert("WTF?!?!?");
-		console.log("Cell",arr[col][row]);
+		//console.log("Cell",arr[col][row]);
 
 		drawMark(col, row);
 	}
@@ -102,6 +103,7 @@
 		var elem = document.getElementById("tttBoard");
 		b = elem.getContext("2d");
 		b.beginPath();
+		b.lineWidth = 1;
 		if(window.PlayerTurn == 0)
 		{
 			b.moveTo(X1.start.x + (col * 166), X1.start.y + (row * 166));
@@ -124,13 +126,10 @@
 		window.PlayerTurn = !window.PlayerTurn
 
 	}
-	$(document).ready(function()
-	{
-		drawBoard();
-	});
 	</script>
 </head>
 <body>
 <canvas id="tttBoard" width="500px" height="500px">Your browser does not seem to support the canvas element. Try Firefox or Chrome!</canvas>
+<script>drawBoard();</script>
 </body>
 </html>
