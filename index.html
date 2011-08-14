@@ -7,10 +7,14 @@
 			margin: auto;
 		}
 	</style>
+	<script src="json.js"></script>
 	<script>
-		window.TicTacToe = {}
+	window.TicTacToe = {}
 	// Define an array to keep track of the board
 	window.TicTacToe.Board = [[null,null,null],[null,null,null],[null,null,null]];
+	// localStorage space name
+	window.TicTacToe.lsName = "HTML5TTT";
+	window.TicTacToe.GameOn = true;
 	window.TicTacToe.drawBoard = function()
 	{
 		var elem = document.getElementById("tttBoard");
@@ -42,6 +46,11 @@
 
 	window.TicTacToe.boardClick = function(e)
 	{
+		if(!window.TicTacToe.GameOn)
+		{
+			alert("Please start a new game");
+			return;
+		}
 		var elem = document.getElementById("tttBoard");
 		var x;
 		var y;
@@ -171,12 +180,10 @@
 			{'start': {'y': 415, 'x': 10}, 'end': {'y': 415, 'x': 490}},
 			{'start': {'x': 10, 'y': 10}, 'end': {'x': 490, 'y': 490}},
 			{'start': {'x': 490, 'y': 10}, 'end': {'x': 10, 'y': 490}}
-		]
-		console.log('Winner', winner);
+		];
 
 		if(winner != null)
 		{
-			console.log("Drawing Line");
 			var elem = document.getElementById("tttBoard");
 			b = elem.getContext("2d");
 
@@ -195,6 +202,22 @@
 			if(cP == 0)
 				player = "X";
 			b.fillText(player + " Wins!", 250, 250);
+			window.TicTacToe.GameOn = false;
+			// Save the game!
+			var ls = localStorage.getItem(window.TicTacToe.lsName);
+			if(ls == undefined)
+				ls = [];
+			else
+				ls = JSON.parse(ls);
+				
+			var dt = new Date();
+			var obj = {
+				'winner': player,
+				'board': window.TicTacToe.Board,
+				'datetime': dt.toLocaleString()}
+			// Save the value JSON.stringify();
+			ls.push(obj);
+			localStorage.setItem(window.TicTacToe.lsName, JSON.stringify(ls));
 		}
 	}
 	</script>
