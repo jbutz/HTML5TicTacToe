@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+	<title>HTML Tic-Tac-Toe</title>
+	<style>
+		#tttBoard {
+			margin: auto;
+		}
+	</style>
+	<script>
+	function drawBoard()
+	{
+		var elem = document.getElementById("tttBoard");
+		b = elem.getContext("2d");
+		// Create a new path, this lets us specify new strokeStyles? I think?
+		b.beginPath();
+		// Vert
+		b.moveTo(166,0);
+		b.lineTo(166,500);
+		b.moveTo(332,0);
+		b.lineTo(332,500);
+		// Horiz
+		b.moveTo(0,166);
+		b.lineTo(500,166);
+		b.moveTo(0,332);
+		b.lineTo(500,332);
+		// Set the line color
+		b.strokeStyle = "#000000";
+		// And now we stroke!
+		b.stroke();
+
+		// Set click event
+		elem.addEventListener("click", boardClick, false);
+
+		// Player 0's turn!
+		window.PlayerTurn = 0; // 0 = X, 1 = O .. I know, fun isn't it!
+	}
+
+	function boardClick(e)
+	{
+		var elem = document.getElementById("tttBoard");
+		var x;
+		var y;
+
+		if (e.pageX != undefined && e.pageY != undefined)
+		{
+			x = e.pageX;
+			y = e.pageY;
+		}
+		else
+		{
+			x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+			y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+		}
+		x -= elem.offsetLeft;
+		y -= elem.offsetTop;
+
+		var cell = null;
+		// Make an array of values so we can quickly figure out
+		//		which cell we have without nested if statements
+		var arr = [];
+		//  0,0 | 1,0 | 2,0
+		//  ----|-----|----
+		//  0,1 | 1,1 | 2,1
+		//  ----|-----|----
+		//  0,2 | 1,2 | 2,2
+
+		arr[0] = [0,3,6];
+		arr[1] = [1,4,7];
+		arr[2] = [2,5,8];
+
+		var row = null;
+		var col = null;
+		// Which row?
+		if(y <= 166)
+			row = 0;
+		else if(y > 166 && y <= 332)
+			row = 1;
+		else if(y > 332)
+			row = 2;
+		else
+			alert("WTF?!?!");
+		// Which column?
+		if(x <= 166)
+			col = 0;
+		else if(x > 166 && x <= 332)
+			col = 1;
+		else if(x > 332)
+			col = 2;
+		else
+			alert("WTF?!?!?");
+		console.log("Cell",arr[col][row]);
+
+		drawMark(col, row);
+	}
+
+	function drawMark(col, row)
+	{
+		var X1 = { "start" : { "x": 10, "y": 10 }, "end": { "x": 155, "y": 155} };
+		var X2 = { "start" : { "x": 155, "y" : 10 }, "end": { "x": 10, "y": 155} };
+
+		var elem = document.getElementById("tttBoard");
+		b = elem.getContext("2d");
+		b.beginPath();
+		if(window.PlayerTurn == 0)
+		{
+			b.moveTo(X1.start.x + (col * 166), X1.start.y + (row * 166));
+			b.lineTo(X1.end.x + (col * 166), X1.end.y + (row * 166));
+			
+			b.moveTo(X2.start.x + (col * 166), X2.start.y + (row * 166));
+			b.lineTo(X2.end.x + (col * 166), X2.end.y + (row * 166));
+		}
+		else
+		{
+			var x = (col * 166) + (166 / 2);
+			var y = (row * 166) + (166 / 2);
+			var radius = 166 / 2 - 10;
+
+			b.arc(x, y, radius, 0, Math.PI * 2, false);
+		}
+		b.strokeStyle = "#000000";
+		b.stroke();
+
+		window.PlayerTurn = !window.PlayerTurn
+
+	}
+	$(document).ready(function()
+	{
+		drawBoard();
+	});
+	</script>
+</head>
+<body>
+<canvas id="tttBoard" width="500px" height="500px">Your browser does not seem to support the canvas element. Try Firefox or Chrome!</canvas>
+</body>
+</html>
