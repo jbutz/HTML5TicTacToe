@@ -8,6 +8,8 @@
 		}
 	</style>
 	<script>
+	// Define an array to keep track of the board
+	window.Board = [[null,null,null],[null,null,null],[null,null,null]];
 	function drawBoard()
 	{
 		var elem = document.getElementById("tttBoard");
@@ -97,15 +99,20 @@
 
 	function drawMark(col, row)
 	{
-		var X1 = { "start" : { "x": 10, "y": 10 }, "end": { "x": 155, "y": 155} };
-		var X2 = { "start" : { "x": 155, "y" : 10 }, "end": { "x": 10, "y": 155} };
-
 		var elem = document.getElementById("tttBoard");
 		b = elem.getContext("2d");
+		if(window.Board[col][row] != null)
+		{
+			alert("That position has already been marked! Please pick a different one.");
+			return;
+		}
 		b.beginPath();
 		b.lineWidth = 1;
 		if(window.PlayerTurn == 0)
 		{
+			var X1 = { "start" : { "x": 10, "y": 10 }, "end": { "x": 155, "y": 155} };
+			var X2 = { "start" : { "x": 155, "y" : 10 }, "end": { "x": 10, "y": 155} };
+
 			b.moveTo(X1.start.x + (col * 166), X1.start.y + (row * 166));
 			b.lineTo(X1.end.x + (col * 166), X1.end.y + (row * 166));
 			
@@ -122,9 +129,72 @@
 		}
 		b.strokeStyle = "#000000";
 		b.stroke();
-
+		
+		// Record the position
+		window.Board[col][row] = window.PlayerTurn;
+		// Check for a win
+		checkWin();
+		// Switch players
 		window.PlayerTurn = !window.PlayerTurn
 
+	}
+
+	function checkWin()
+	{
+		var winner = null;
+		var cP = window.PlayerTurn; // Current Player (can only win after making a move)
+		var b = window.Board;
+
+		if(b[0][0] == cP && b[0][1] == cP && b[0][2] == cP) // Col 0
+			winner = 0;
+		else if(b[1][0] == cP && b[1][1] == cP && b[1][2] == cP ) // Col 1
+			winner = 1;
+		else if(b[2][0] == cP && b[2][1] == cP && b[2][2] == cP ) // Col 2
+			winner = 2;
+		else if(b[0][0] == cP && b[1][0] == cP && b[2][0] == cP ) // Row 0
+			winner = 3;
+		else if(b[0][1] == cP && b[1][1] == cP && b[2][1] == cP ) // Row 1
+			winner = 4;
+		else if(b[0][2] == cP && b[1][2] == cP && b[2][2] == cP ) // Row 2
+			winner = 5;
+		else if(b[0][0] == cP && b[1][1] == cP && b[2][2] == cP ) // Left Diagonal
+			winner = 6;
+		else if(b[2][0] == cP && b[1][1] == cP && b[0][2] == cP ) // Right Diagonal
+			winner = 7;
+		var lineArr = [
+			{'start': {'x': 83, 'y': 10}, 'end': {'x': 83, 'y': 490}},
+			{'start': {'x': 249, 'y': 10}, 'end': {'x': 249, 'y': 490}},
+			{'start': {'x': 415, 'y': 10}, 'end': {'x': 415, 'y': 490}},
+			{'start': {'y': 83, 'x': 10}, 'end': {'y': 83, 'x': 490}},
+			{'start': {'y': 249, 'x': 10}, 'end': {'y': 249, 'x': 490}},
+			{'start': {'y': 415, 'x': 10}, 'end': {'y': 415, 'x': 490}},
+			{'start': {'x': 10, 'y': 10}, 'end': {'x': 490, 'y': 490}},
+			{'start': {'x': 490, 'y': 10}, 'end': {'x': 10, 'y': 490}}
+		]
+		console.log('Winner', winner);
+
+		if(winner != null)
+		{
+			console.log("Drawing Line");
+			var elem = document.getElementById("tttBoard");
+			b = elem.getContext("2d");
+
+			b.beginPath();
+
+			b.lineWidth = 5;
+			b.strokeStyle = "#FF0000";
+			b.moveTo(lineArr[winner].start.x,lineArr[winner].start.y);
+			b.lineTo(lineArr[winner].end.x,lineArr[winner].end.y);
+			b.stroke();
+
+			// Draw text!
+			b.font = "bold 5em sans-serif";
+			b.textAlign = "center";
+			var player = "O";
+			if(cP == 0)
+				player = "X";
+			b.fillText(player + " Wins!", 250, 250);
+		}
 	}
 	</script>
 </head>
