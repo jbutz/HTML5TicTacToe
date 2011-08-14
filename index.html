@@ -8,9 +8,10 @@
 		}
 	</style>
 	<script>
+		window.TicTacToe = {}
 	// Define an array to keep track of the board
-	window.Board = [[null,null,null],[null,null,null],[null,null,null]];
-	function drawBoard()
+	window.TicTacToe.Board = [[null,null,null],[null,null,null],[null,null,null]];
+	window.TicTacToe.drawBoard = function()
 	{
 		var elem = document.getElementById("tttBoard");
 		b = elem.getContext("2d");
@@ -33,13 +34,13 @@
 		b.stroke();
 
 		// Set click event
-		elem.addEventListener("click", boardClick, false);
+		elem.addEventListener("click", window.TicTacToe.boardClick, false);
 
 		// Player 0's turn!
-		window.PlayerTurn = 0; // 0 = X, 1 = O .. I know, fun isn't it!
+		window.TicTacToe.PlayerTurn = 0; // 0 = X, 1 = O .. I know, fun isn't it!
 	}
 
-	function boardClick(e)
+	window.TicTacToe.boardClick = function(e)
 	{
 		var elem = document.getElementById("tttBoard");
 		var x;
@@ -94,21 +95,21 @@
 			alert("WTF?!?!?");
 		//console.log("Cell",arr[col][row]);
 
-		drawMark(col, row);
+		window.TicTacToe.drawMark(col, row);
 	}
 
-	function drawMark(col, row)
+	window.TicTacToe.drawMark = function(col, row)
 	{
 		var elem = document.getElementById("tttBoard");
 		b = elem.getContext("2d");
-		if(window.Board[col][row] != null)
+		if(window.TicTacToe.Board[col][row] != null)
 		{
 			alert("That position has already been marked! Please pick a different one.");
 			return;
 		}
 		b.beginPath();
 		b.lineWidth = 1;
-		if(window.PlayerTurn == 0)
+		if(window.TicTacToe.PlayerTurn == 0)
 		{
 			var X1 = { "start" : { "x": 10, "y": 10 }, "end": { "x": 155, "y": 155} };
 			var X2 = { "start" : { "x": 155, "y" : 10 }, "end": { "x": 10, "y": 155} };
@@ -131,19 +132,19 @@
 		b.stroke();
 		
 		// Record the position
-		window.Board[col][row] = window.PlayerTurn;
+		window.TicTacToe.Board[col][row] = window.TicTacToe.PlayerTurn;
 		// Check for a win
-		checkWin();
+		window.TicTacToe.checkWin();
 		// Switch players
-		window.PlayerTurn = !window.PlayerTurn
+		window.TicTacToe.PlayerTurn = !window.TicTacToe.PlayerTurn;
 
 	}
 
-	function checkWin()
+	window.TicTacToe.checkWin = function()
 	{
 		var winner = null;
-		var cP = window.PlayerTurn; // Current Player (can only win after making a move)
-		var b = window.Board;
+		var cP = window.TicTacToe.PlayerTurn; // Current Player (can only win after making a move)
+		var b = window.TicTacToe.Board;
 
 		if(b[0][0] == cP && b[0][1] == cP && b[0][2] == cP) // Col 0
 			winner = 0;
@@ -200,6 +201,6 @@
 </head>
 <body>
 <canvas id="tttBoard" width="500px" height="500px">Your browser does not seem to support the canvas element. Try Firefox or Chrome!</canvas>
-<script>drawBoard();</script>
+<script>window.TicTacToe.drawBoard();</script>
 </body>
 </html>
