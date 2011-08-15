@@ -220,10 +220,77 @@
 			localStorage.setItem(window.TicTacToe.lsName, JSON.stringify(ls));
 		}
 	}
+	function drawMiniBoard(canvas,board)
+	{
+		var b = canvas.getContext("2d");
+		var w = canvas.width;
+		var h = canvas.height;
+		var spaceW = Math.floor(w / 3);
+		var spaceH = Math.floor(h / 3);
+
+		// Draw Lines
+		b.beginPath();
+		b.lineWidth = 2;
+		b.strokeStyle = "#000000";
+
+		b.moveTo(spaceW,0); b.lineTo(spaceW,h); // Vertical
+		b.moveTo(spaceW * 2 ,0); b.lineTo(spaceW * 2,h); // Vertical
+		b.moveTo(0,spaceH); b.lineTo(w,spaceH); // Horizontal
+		b.moveTo(0,spaceH * 2); b.lineTo(w,spaceH * 2); // Horizontal
+		b.stroke();
+
+		// Draw the pieces
+		console.log("Board", board);
+		for(c = 0; c < 3; c++)
+		{
+			for(r = 0; r < 3; r++)
+			{
+
+		b.beginPath();
+		b.lineWidth = 1;
+		b.strokeStyle = "#000000";
+console.log(c + "," + r + ": "+ board[c][r]);
+				if(board[c][r] == 0)
+				{
+					// X
+					var offset = 0;
+					if(spaceW <= spaceH)
+						offset = spaceW;
+					else
+						offset = spaceH;
+					offset = offset / 2;
+					offset -= offset * 0.75;
+
+					var l1 = {'start': {'x': spaceW * c + offset , 'y': spaceH * r + offset}, 'end': {'x': spaceW * c + spaceW - offset ,'y': spaceH * r + spaceH - offset}};
+					var l2 = {'start': {'x': spaceW * c + spaceW - offset , 'y': spaceH * r + offset}, 'end': {'x': spaceW * c + offset ,'y': spaceH * r + spaceH - offset}};
+					b.moveTo(l1.start.x,l1.start.y); b.lineTo(l1.end.x,l1.end.y);
+					b.moveTo(l2.start.x,l2.start.y); b.lineTo(l2.end.x,l2.end.y);
+				}
+				else if(board[c][r] == 1)
+				{
+					// O
+					var x = spaceW * c + (spaceW * 0.5);
+					var y = spaceH * r + (spaceH * 0.5);
+					// Choose which is less
+					var radius = 0;
+					if(spaceW <= spaceH)
+						radius = spaceW;
+					else
+						radius = spaceH;
+					radius = radius / 2;
+					radius -= radius * 0.25;
+					b.arc(x, y, radius, 0, Math.PI * 2, false);
+				}
+			b.stroke();
+			}
+		}
+	}
 	</script>
 </head>
 <body>
 <canvas id="tttBoard" width="500px" height="500px">Your browser does not seem to support the canvas element. Try Firefox or Chrome!</canvas>
-<script>window.TicTacToe.drawBoard();</script>
+
+<canvas id="test" width="100px" height="100px"></canvas>
+<script>window.TicTacToe.drawBoard(); drawMiniBoard(document.getElementById('test'),JSON.parse("[[0,0,0],[1,1,1],[null,null,null]]"));</script>
 </body>
 </html>
