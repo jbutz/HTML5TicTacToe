@@ -102,7 +102,6 @@
 			col = 2;
 		else
 			alert("WTF?!?!?");
-		//console.log("Cell",arr[col][row]);
 
 		window.TicTacToe.drawMark(col, row);
 	}
@@ -218,6 +217,8 @@
 			// Save the value JSON.stringify();
 			ls.push(obj);
 			localStorage.setItem(window.TicTacToe.lsName, JSON.stringify(ls));
+			// Update History
+			doHistory();
 		}
 	}
 	function drawMiniBoard(canvas,board)
@@ -240,7 +241,6 @@
 		b.stroke();
 
 		// Draw the pieces
-		console.log("Board", board);
 		for(c = 0; c < 3; c++)
 		{
 			for(r = 0; r < 3; r++)
@@ -249,7 +249,6 @@
 		b.beginPath();
 		b.lineWidth = 1;
 		b.strokeStyle = "#000000";
-console.log(c + "," + r + ": "+ board[c][r]);
 				if(board[c][r] == 0)
 				{
 					// X
@@ -285,12 +284,47 @@ console.log(c + "," + r + ": "+ board[c][r]);
 			}
 		}
 	}
+	function doHistory()
+	{
+		var data = localStorage.getItem('HTML5TTT');
+		data = JSON.parse(data);
+		data.reverse();
+		var container = document.getElementById('hist');
+		// Clear the container
+		while (container.hasChildNodes())
+		{
+			container.removeChild(container.firstChild);
+		}
+		// Loop through the data
+		canvID = 0;
+		for(x in data)
+		{
+			var hist = data[x];
+			if(hist.datetime == undefined)
+				break;
+			var elem = document.createElement('div');
+			elem.innerHTML = "<p><strong>"+hist.datetime+"</strong><br>Winner: "+hist.winner+"<br><canvas id='can"+canvID+"' width='100px' height='100px'></canvas>";
+			container.appendChild(elem);
+			drawMiniBoard(document.getElementById("can"+canvID),hist.board);
+			canvID++;
+		}
+	}
 	</script>
+	<style>
+		.left {
+			float: left;
+			width: 500px;
+		}
+		.right {
+			float: right;
+			width: 250px;
+		}
+	</style>
 </head>
 <body>
-<canvas id="tttBoard" width="500px" height="500px">Your browser does not seem to support the canvas element. Try Firefox or Chrome!</canvas>
-
-<canvas id="test" width="100px" height="100px"></canvas>
-<script>window.TicTacToe.drawBoard(); drawMiniBoard(document.getElementById('test'),JSON.parse("[[0,0,0],[1,1,1],[null,null,null]]"));</script>
+<button onClick="window.location.reload(true);">New Game</button>
+<div class='left'><canvas id="tttBoard" width="500px" height="500px">Your browser does not seem to support the canvas element. Try Firefox or Chrome!</canvas></div>
+<div class='right'><h1>History</h1><div id='hist'><canvas id="test" width="100px" height="100px"></canvas></div></div>
+<script>window.TicTacToe.drawBoard();doHistory();</script>
 </body>
 </html>
